@@ -17,6 +17,8 @@ export const go = (route, params = {}) => {
   }
   dispatch(nav, route, params); const sc = document.querySelector('.screen'); if (sc) sc.scrollTop = 0;
 };
+// After a reload on a deep screen, make Back lead to Home instead of leaving the app.
+export function seedBack() { if (!stack.length) { stack.push({ route: 'home', params: {} }); history.pushState({ n: 'seed' }, ''); } }
 // Android back button: step back through screens instead of leaving the app.
 window.addEventListener('popstate', () => {
   const prev = stack.pop();
