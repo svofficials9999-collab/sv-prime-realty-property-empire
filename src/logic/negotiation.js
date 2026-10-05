@@ -28,7 +28,7 @@ export function accept(n) {
   n.status = 'won'; n.price = n.offer; n.history.push({ by: 'player', price: n.offer, accepted: true });
   return { ok: true, outcome: 'won' };
 }
-export function walk(n) { n.status = 'lost'; n.note = 'You walked away.'; n.reason = 'walked'; return { ok: true, outcome: 'lost' }; }
+export function walk(n) { if (n.status !== 'open') return { ok: false, msg: 'Negotiation is over' }; n.status = 'lost'; n.note = 'You walked away.'; n.reason = 'walked'; return { ok: true, outcome: 'lost' }; }
 
 // Player counters with a price. Outcomes: won | counter | lost.
 export function counter(n, price) {
