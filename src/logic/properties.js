@@ -55,6 +55,7 @@ export function withdrawListing(s, id) {
   if (!p || p.status !== 'listed') return { ok: false, msg: 'Not a listing' };
   if (s.leads.some((l) => l.propertyId === id && ['contacted', 'visited', 'negotiating'].includes(l.status))) return { ok: false, msg: 'Finish the active lead first' };
   p.status = 'market';
+  for (const l of s.leads) if (l.propertyId === id && l.status === 'new') { l.status = 'expired'; l.result = { kind: 'expired' }; }
   return { ok: true, p };
 }
 export const marketCount = (s) => s.properties.filter((p) => p.status === 'market').length;
