@@ -19,9 +19,10 @@ import { missions } from './ui/screens/missions.js';
 import { profile, settings } from './ui/screens/profile.js';
 import { map } from './ui/screens/map.js';
 import { staff, garage } from './ui/screens/team.js';
+import { help } from './ui/screens/help.js';
 import { inrShort } from './util/money.js';
 
-Object.entries({ splash: onb.splash, login: onb.login, tutorial: onb.tutorial, home, properties, property, mine, leads, customer, visit, negotiate, deal, business, missions, profile, settings, map, staff, garage }).forEach(([k, v]) => register(k, v));
+Object.entries({ splash: onb.splash, login: onb.login, tutorial: onb.tutorial, home, properties, property, mine, leads, customer, visit, negotiate, deal, business, missions, profile, settings, map, staff, garage, help }).forEach(([k, v]) => register(k, v));
 configure({ save: (s) => { if (!s.properties || !s.properties.length) return; try { save(s); } catch (e) { console.warn('save failed', e); } } });
 
 const root = document.getElementById('app');
