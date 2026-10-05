@@ -51,5 +51,10 @@ setInterval(() => {
 }, B.tickMs);
 document.addEventListener('visibilitychange', () => { if (document.hidden) flush(); });
 window.addEventListener('pagehide', flush);
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
+if ('serviceWorker' in navigator) {
+  const had = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.register('./sw.js').catch(() => {});
+  // A new version took over: save and reload once so the player runs the new files.
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (had) { flush(); location.reload(); } });
+}
 export { SAVE_KEY };
