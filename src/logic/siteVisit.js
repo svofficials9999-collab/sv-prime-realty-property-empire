@@ -1,5 +1,6 @@
 import { clamp, between } from '../util/rng.js';
 import { concedeBonus } from './upgrades.js';
+import { visitBonus } from './team.js';
 
 export function fitScore(c, p) {
   const loc = c.prefLocation === p.location ? 40 : 10;
@@ -16,7 +17,7 @@ export function runVisit(s, rand, lead) {
   const c = s.customers.find((x) => x.id === lead.customerId);
   const p = s.properties.find((x) => x.id === lead.propertyId);
   const fit = fitScore(c, p);
-  const roll = between(rand, -10, 10) + concedeBonus(s) * 50;
+  const roll = between(rand, -10, 10) + concedeBonus(s) * 50 + visitBonus(s);
   const score = clamp(fit.total + roll, 0, 100);
   const outcome = score >= 75 ? 'liked' : score >= 50 ? 'neutral' : 'disliked';
   const delta = { liked: 10, neutral: 0, disliked: -12 }[outcome];
