@@ -1,0 +1,25 @@
+import { B } from '../config/balance.js';
+import { commissionRate } from './upgrades.js';
+
+// Closes a won negotiation: client property pays commission; player-owned property pays full price.
+export function closeDeal(s, lead) {
+  const n = lead.neg;
+  const p = s.properties.find((x) => x.id === lead.propertyId);
+  const c = s.customers.find((x) => x.id === lead.customerId);
+  const price = n.price;
+  const own = p.status === 'owned';
+  const rate = own ? 0 : commissionRate(s);
+  const commission = own ? 0 : Math.round(price * rate);
+  const proceeds = own ? price : commission;
+  const xp = B.xpDeal + Math.floor(proceeds / B.xpPerCommission);
+  s.player.cash += proceeds;
+  p.status = 'sold'; p.forSale = false; p.soldPrice = price;
+  c.satisfaction = Math.min(100, c.satisfaction + 15);
+  const deal = { id: 'd' + (s.deals.length + 1), leadId: lead.id, propertyId: p.id, customerId: c.id, price, rate, commission, proceeds, own, xp, week: s.week };
+  s.deals.push(deal);
+  s.stats.deals += 1; s.stats.sales += price; s.stats.earned += proceeds;
+  lead.status = 'won'; lead.result = { kind: 'won', dealId: deal.id };
+  // other open leads on this property are closed
+  for (const l of s.leads) if (l.id !== lead.id && l.propertyId === p.id && ['new', 'contacted', 'visited'].includes(l.status)) { l.status = 'lost'; l.result = { kind: 'lost', reason: 'sold' }; }
+  return deal;
+}
