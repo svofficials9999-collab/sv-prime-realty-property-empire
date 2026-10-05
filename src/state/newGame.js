@@ -14,6 +14,7 @@ export function newGame(name, seed, today) {
     properties: [], leads: [], customers: [], deals: [],
     stats: { deals: 0, sales: 0, earned: 0, lost: 0 },
     market: initMarket(), missions: freshMissions(today),
+    staff: {}, garage: [],
     tutorial: { done: false },
     nav: { route: 'home', params: {} }, ui: {},
   };
