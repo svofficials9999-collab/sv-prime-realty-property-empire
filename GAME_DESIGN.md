@@ -8,8 +8,8 @@ PROPERTY → LEAD → CUSTOMER → SITE VISIT → NEGOTIATION → DEAL → COMMI
 
 1. Properties appear in the Marketplace (listings to represent) or are bought as investments.
 2. Each property attracts Leads over time (rate depends on marketing, area demand, price vs market).
-3. A Lead becomes a Customer profile when contacted (costs 1 energy).
-4. Site Visit: match customer to property. Visit quality = fit score (budget, location, type) x vehicle comfort x agent skill.
+3. A Lead becomes a Customer profile when contacted (costs 1 energy). Energy refills +2 per week, max 10. Leads go cold after 5 weeks without progress.
+4. Site Visit: match customer to property. Visit result = fit score (budget, location, type) plus a small random roll. Vehicles are Phase 2.
 5. Negotiation: turn-based offer / counter rounds. Outcome: Deal Won, Counter Offer, Deal Lost.
 6. Deal closing: commission paid, XP granted, customer satisfaction updated.
 7. Cash buys upgrades, staff, vehicles, and investment properties.
@@ -24,20 +24,19 @@ Behaviour (data-driven archetypes):
 - Cash-rich Upgrader: pays premium for luxury, patience high.
 
 ## Negotiation
-State: askPrice (listing), sellerFloor (seller expects), buyerOffer, buyerMax (hidden).
+State: ask (listing), floor (seller expects), buyerMax (hidden, from budget and visit result), offer (buyer's current offer).
 Example: ask 75,00,000; buyer opens 65,00,000; seller expects 72,00,000.
-Each round player picks: Hold, Counter (any value), Concede (to a step), Offer perk (small cost, raises buyer max), Walk away.
-Buyer response: accept if offer <= buyerMax x (1 + satisfactionBonus); otherwise counter toward the midpoint, weighted by negotiationSkill; patience drops by (5 - urgency) per round.
-Outcomes:
-- Deal Won: agreed price between sellerFloor and buyerMax.
-- Counter Offer: gap exists, patience remains.
-- Deal Lost: patience 0, or player walks, or price < sellerFloor (seller refuses).
-Rounds max 5.
+Buyer max = min(budget, ask x visit factor). Visit factor: liked 0.99, neutral 0.96, disliked 0.90.
+Each round the player can: send a counter (never below the seller floor), accept the buyer's offer (only if it is at or above the floor), or walk away.
+- If the counter is at or below buyerMax, the buyer accepts: Deal Won at the counter price.
+- Otherwise the buyer moves part of the way toward the counter (concession 30-75%, higher with Sales Team and low-skill buyers) and patience drops by 1 (by 2 if the counter is 12%+ above buyerMax). Result: Counter Offer.
+- Patience 0 or round limit (5) reached: Deal Lost.
+Patience starts at 6 - 0.8 x urgency (2 to 5). Staff and perks are Phase 2.
 
 ## Economy
 - Commission = agreedPrice x commissionRate (default 2%). Example: 50,00,000 x 2% = 1,00,000.
 - commissionRate grows with upgrades (Office, Customer Service) up to 3%.
-- Rental income (investment properties): monthly = price x yield/12, credited per in-game day (1 real minute = 1 game day, paused offline; offline earnings capped at 8h).
+- Rental income (investment properties): weekly = price x yield/52, credited per game week (one game week passes about every 25 seconds while the app is open; up to 8 weeks catch up after the app was closed).
 - Market price index per location scales by event multipliers and a slow random trend (bounded +-25%).
 - All money is integer rupees. Display in Indian format (lakh/crore).
 - Costs scale: upgrade level n costs base x 1.6^n. Rewards scale with level so progression stays linear in time.
