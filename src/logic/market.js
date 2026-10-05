@@ -1,3 +1,4 @@
+import { vehicleTier } from './team.js';
 import { LOCATIONS, locById } from '../config/locations.js';
 import { EVENTS } from '../data/events.js';
 import { pick, between, int, clamp } from '../util/rng.js';
@@ -11,7 +12,8 @@ const evSum = (s, id, key) => s.market.events.filter((e) => e.loc === id).reduce
 export const priceIdx = (s, id) => s.market.loc[id].idx * (1 + evSum(s, id, 'price'));
 export const demandOf = (s, id) => clamp(Math.round(s.market.loc[id].demand + evSum(s, id, 'demand')), 5, 100);
 export const ppsyOf = (s, id) => Math.round(locById(id).ppsy * priceIdx(s, id));
-export const unlocked = (s) => LOCATIONS.filter((l) => l.minLevel <= s.player.level);
+// Far areas also need a vehicle. Players who already have a property there keep access (old saves are never locked out).
+export const unlocked = (s) => LOCATIONS.filter((l) => l.minLevel <= s.player.level && (!l.minVehicle || vehicleTier(s) >= l.minVehicle || s.properties.some((p) => p.location === l.id && p.status !== 'market' && p.status !== 'gone')));
 
 export function driftMarket(s, rand) {
   for (const l of LOCATIONS) {
