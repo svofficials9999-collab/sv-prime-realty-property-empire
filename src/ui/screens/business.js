@@ -15,7 +15,9 @@ export const business = {
     <div class="row" style="margin-top:8px"><div class="pips">${pips}</div><span class="mut">Level ${l} / ${B.upgradeMax}</span></div>
     ${max ? '<div class="why">Maxed out</div>' : btn({ label: `Upgrade · ${inr(cost)}`, act: 'up', arg: u.id, disabled: s.player.cash < cost, reason: `Need ${inr(cost)}. You have ${inr(s.player.cash)}.` })}</div>`;
   }).join('')}
-  <div class="card mut"><b>Staff and Vehicles</b><div>Hiring staff and buying vehicles unlock in Phase 2.</div></div>`,
-  handlers: { up: ({ arg, toast }) => { const r = dispatch(upgrade, arg); toast(r.ok ? `Upgraded to level ${r.level}.` : r.msg, !r.ok); } },
+  <div class="card tap" data-act="staff"><div class="row"><div class="pi">👥</div><div class="col" style="flex:1"><b>Staff</b><span class="mut">Hire a team for passive bonuses · ${Object.keys(s.staff || {}).length} hired</span></div><span class="mut">→</span></div></div>
+  <div class="card tap" data-act="garage"><div class="row"><div class="pi">🚗</div><div class="col" style="flex:1"><b>Vehicles</b><span class="mut">Better site visits and far areas · ${(s.garage || []).length} owned</span></div><span class="mut">→</span></div></div>`,
+  handlers: {
+    staff: ({ go }) => go('staff'), garage: ({ go }) => go('garage'), up: ({ arg, toast }) => { const r = dispatch(upgrade, arg); toast(r.ok ? `Upgraded to level ${r.level}.` : r.msg, !r.ok); } },
 };
 export { bar, kv };
