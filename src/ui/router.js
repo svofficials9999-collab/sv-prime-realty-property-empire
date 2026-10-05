@@ -8,7 +8,25 @@ import { esc } from '../util/dom.js';
 const screens = {};
 let root, toastTimer;
 export const register = (name, mod) => { screens[name] = mod; };
-export const go = (route, params = {}) => { dispatch(nav, route, params); const sc = document.querySelector('.screen'); if (sc) sc.scrollTop = 0; };
+const stack = [];
+let popping = false;
+export const go = (route, params = {}) => {
+  const cur = getState().nav;
+  if (!popping && (cur.route !== route || JSON.stringify(cur.params) !== JSON.stringify(params))) {
+    if (!['splash', 'login', 'tutorial'].includes(cur.route)) { stack.push(cur); if (stack.length > 30) stack.shift(); history.pushState({ n: stack.length }, ''); }
+  }
+  dispatch(nav, route, params); const sc = document.querySelector('.screen'); if (sc) sc.scrollTop = 0;
+};
+// Android back button: step back through screens instead of leaving the app.
+window.addEventListener('popstate', () => {
+  const prev = stack.pop();
+  if (!prev) return;
+  popping = true;
+  let r = prev.route; let p = prev.params;
+  if (r === 'negotiate' || r === 'deal') { r = 'leads'; p = {}; }
+  go(r, p);
+  popping = false;
+});
 export function toast(msg, bad = false) {
   const old = root.querySelector('.toast'); if (old) old.remove();
   const el = document.createElement('div'); el.className = 'toast' + (bad ? ' bad' : ''); el.textContent = msg; root.appendChild(el);
