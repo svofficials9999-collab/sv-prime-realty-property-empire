@@ -1,33 +1,21 @@
-# UI STRUCTURE
+# UI STRUCTURE (as built, v1.1)
 
-Portrait 9:16, safe-area aware, one-hand reach (primary actions bottom half).
-Theme: navy #0B1F3A background, royal blue #1F4FD8 surfaces, gold #D4AF37 accents/primary CTA, white text, WhatsApp green #25D366 for contact actions only. Fonts: Poppins/Noto Sans Telugu fallback. Numbers in Indian format.
+Mobile-first portrait, navy / royal blue / gold / white. Bottom navigation: HOME, PROPERTIES, LEADS, MAP, BUSINESS. A top bar shows name, level, XP bar, cash, energy and week.
 
-## Bottom nav (always visible except splash/login/tutorial/negotiation)
-HOME | PROPERTIES | LEADS | MAP | BUSINESS
+## Screens (src/ui/screens)
+- onboarding: splash, login (name or guest), tutorial (4 steps).
+- home: Next step button (jumps to the lead that needs action), first-deal guide, Next level XP, stats, missions, My Properties, Advance week, Profile, Settings.
+- properties: marketplace with area and type filters, property detail (take listing or buy), mine (owned and listed, sell, withdraw).
+- leads: New / Active / Closed tabs, customer detail with Contact, Site visit and Negotiate actions, boost with tokens.
+- visit: result, score, why.
+- negotiation: asking price, buyer offer, seller minimum, patience, slider and step buttons, counter, accept, walk away, leave and resume.
+- deal: win or loss result, commission, XP, next level.
+- business: 6 upgrade tracks.
+- missions: 5 daily missions with claim.
+- profile, settings (reset save).
+- map: Phase 2 placeholder (text only).
 
-## Screens
-1. Splash - logo, tagline, load save, then Login/Home
-2. Login - Guest play (MVP); Google/phone appear when cloud is enabled
-3. Tutorial - 5 guided steps ending with a real first lead
-4. Home - cash, level/XP bar, today's missions, new leads, market event banner, quick actions
-5. Properties - marketplace list, filter chips (location, type, price), search
-6. Property Details - photos, specs, ask price, area stats, "List it" / "Buy"
-7. Leads - tabs New / Active / Closed; urgency badges
-8. Customer - profile fields, personality, satisfaction, "Schedule site visit"
-9. Site Visit - fit breakdown, vehicle, outcome reveal
-10. Negotiation - ask / offer / seller-floor hint, round log, Hold / Counter / Concede / Perk / Walk away
-11. Deal Result - Won / Counter / Lost, commission, XP, next action
-12. My Properties - owned, listed, rented, income
-13. Business - 6 upgrade tracks, staff (locked in MVP, shown as "Coming in Phase 2" only if hidden is impractical), vehicles
-14. Missions - daily list, claim button
-15. Profile - level, title, stats, achievements (Phase 2)
-16. Settings - sound, language, reset save (confirm), about
-
-MAP screen: MVP shows the 9 locations list with avg price, demand, yield, trend and available properties (tap -> filtered Properties). Interactive map graphic in Phase 2.
-
-## Reusable components
-Button (primary/secondary/whatsapp, disabled-with-reason), Card, Modal, Toast, Stat, ProgressBar, Badge, BottomNav, PropertyCard, CustomerCard, MoneyText, EmptyState.
-
-## Rules
-Every primary button does a real action or is hidden/disabled with the reason shown. Animation only for feedback (deal won, level up). Max 1 primary CTA per screen.
+## Behaviour
+- Back button and the on-screen arrow return to the previous screen. Negotiation and deal screens return to Leads, so no action repeats.
+- Buttons that cannot be used are disabled with a short reason.
+- Toasts confirm actions, rent and new leads.
