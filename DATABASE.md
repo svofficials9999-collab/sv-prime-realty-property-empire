@@ -1,46 +1,41 @@
-# DATABASE
+# DATABASE (as built, MVP v1.1)
 
-MVP stores one JSON save document locally (same shape as the cloud document). Money = integer rupees. Ids = short strings.
+The MVP has no server database. One JSON document is saved in the phone's localStorage. Money is integer rupees. Ids are short strings.
 
-## Save document (`svpe.save.v1`)
+## Storage
+- Key `svpe.save.v1` holds `{ v, sum, body }`. `body` is the state as a JSON string and `sum` is a checksum. A save with a wrong checksum is ignored.
+- Key `svpe.save.v1.bak` holds the previous good save. Load falls back to it if the main save is damaged.
+- Saves are written 300 ms after every action, when the app is hidden and on page close.
+- On start, up to 8 missed weeks are caught up from the time of the last save (25 s = 1 week).
+
+## State document
 ```
 {
-  version, updatedAt, playerId,
-  player: { name, level, xp, cash, tokens, reputation, energy, energyAt, createdAt, title },
-  business: { officeLvl, marketingLvl, salesLvl, techLvl, propMgmtLvl, custServiceLvl, staff: [], vehicles: [] },
-  properties: { [id]: Property },
-  leads: { [id]: Lead },
-  customers: { [id]: Customer },
-  deals: { [id]: Deal },
-  missions: { day, items: [{id, progress, target, claimed}] },
-  achievements: { [id]: unlockedAt },
-  market: { day, locations: { [loc]: {priceIdx, demand, trend} }, events: [Event] },
-  settings: { sound, language, notifications },
-  tutorial: { step, done }
+  version, rng, week, savedAt, today,
+  player:   { name, level, xp, cash, tokens, energy },
+  business: { office, marketing, sales, tech, propmgmt, service },   // levels 0-5
+  properties: [Property], leads: [Lead], customers: [Customer], deals: [Deal],
+  stats:    { deals, sales, earned, lost },
+  market:   { loc: { [locationId]: { idx, demand, trend } }, events: [Event] },
+  missions: { date, items: [{ id, progress, claimed }] },   // reset each calendar day
+  tutorial: { done },
+  nav: { route, params }, ui: {}
 }
 ```
 
 ## Models
-**Property**: id, title, type, location, areaSqYd|sqft, bedrooms, askPrice, sellerFloor, status (available|listed|reserved|sold|owned|rented), ownerType (client|player), rentMonthly, yieldPct, createdDay, imageKey.
-**Lead**: id, propertyId, customerId, source (walk-in|ads|referral|portal), quality (1-5), status (new|contacted|visit_scheduled|negotiating|won|lost), createdDay, expiresDay.
-**Customer**: id, name, budget, prefLocation, prefType, urgency, negotiationSkill, riskLevel, satisfaction, archetype, patience.
-**SiteVisit**: id, leadId, propertyId, scheduledDay, fitScore, outcome (liked|neutral|disliked), notes.
-**Negotiation**: id, leadId, rounds [{by, price, at}], buyerMax (hidden), status.
-**Deal**: id, propertyId, customerId, agreedPrice, commissionRate, commission, closedDay, result.
-**Upgrade**: track, level, cost, effect.
-**Mission**: id, text, kind, target, reward {cash, xp, tokens}.
-**MarketEvent**: id, text, locations[], demandDelta, priceDelta, startDay, endDay.
+- **Property**: id, type (plot|bhk2|bhk3|villa|shop), location, area, unit, title, ask, floor, yieldPct, rentWeekly, status (market|listed|owned|sold|gone), forSale, createdWeek, boughtAt, soldPrice.
+- **Lead**: id, propertyId, customerId, status (new|contacted|visited|negotiating|won|lost|expired), source, createdWeek, expiresWeek, visit, neg, result.
+- **Customer**: id, name, archetype, budget, prefType, prefLocation, urgency, skill, risk, satisfaction, openPct.
+- **Visit** (inside lead): outcome (liked|neutral|disliked), score, fit {loc,type,budget}, comment.
+- **Negotiation** (inside lead): ask, floor, buyerMax (hidden), offer, round, maxRounds, patience, concede, history, status (open|won|lost), price, note, reason.
+- **Deal**: id, leadId, propertyId, customerId, price, rate, commission, proceeds, own, xp, week.
 
-## Firestore (Phase 2)
-```
-users/{uid}                    profile, level, xp, cash, tokens, updatedAt
-users/{uid}/saves/current      full save document
-users/{uid}/deals/{dealId}     validated deal log (server-written only)
-users/{uid}/missions/{day}     daily mission state
-market/{day}                   shared market state (server-written)
-leaderboard/{season}/entries/{uid}   name, level, netWorth (server-written)
-config/balance                 economy constants (server-written)
-```
-Security rules: users read/write only own `users/{uid}/saves`; `deals`, `leaderboard`, `market`, `config` are read-only for clients. Cloud Functions validate: price within market band, commission = price x rate, cooldowns, level gates, rental claim limits.
-Storage: `users/{uid}/avatar.webp` (own only).
-Analytics events: tutorial_complete, lead_contacted, visit_done, deal_won, deal_lost, upgrade_bought, level_up.
+## Rules that protect the data
+- A deal is created once per lead. A won lead cannot be accepted, countered or walked away from again.
+- When a property sells, every other open lead on it (including negotiating ones) is closed as lost.
+- Missions are claimed once per day. Reward cash and XP are added only when `claimed` flips from false to true.
+- Resale of a property the player bought earns XP on profit only.
+
+## Phase 2 (locked, not built)
+Cloud save, accounts, staff, vehicles, interactive map, advanced systems.
