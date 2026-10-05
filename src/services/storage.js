@@ -18,6 +18,8 @@ export function migrate(s) {
   s.version = SAVE_VERSION;
   s.nav = s.nav || { route: 'home', params: {} };
   s.ui = s.ui || {};
+  if (!s.staff || typeof s.staff !== 'object') s.staff = {}; // Phase 2, add-only
+  if (!Array.isArray(s.garage)) s.garage = [];
   syncLeads(s); // clear stale negotiations left by older versions
   return s;
 }
