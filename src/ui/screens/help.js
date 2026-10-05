@@ -1,0 +1,24 @@
+import { top } from '../components.js';
+import { TYPES, TYPE_IDS } from '../../data/propertyTypes.js';
+import { STAFF, VEHICLES } from '../../data/team.js';
+import { inrShort } from '../../util/money.js';
+
+const sec = (title, tel, body) => `<div class="card"><b>${title}</b>${tel ? ` <span class="gold">${tel}</span>` : ''}<div class="mut" style="margin-top:6px;font-size:13px;line-height:1.5">${body}</div></div>`;
+export const help = {
+  render: () => `${top('How to play', 'home')}
+  <div class="mut" style="margin-bottom:8px">You are a property agent in Hyderabad. The loop is: Listing → Lead → Site Visit → Negotiation → Deal → Commission.</div>
+  ${sec('1. Listing', 'లిస్టింగ్', 'Open <b>Properties</b>, pick a property and tap <b>Take listing (free)</b>. You represent the owner and use one listing slot. You earn commission when it sells. More slots: Business → Office.')}
+  ${sec('2. Lead', 'లీడ్ (కొనుగోలుదారు)', 'Buyers come to your listings as game weeks pass. A week passes about every 25 seconds while the app is open, or tap <b>Advance one week</b>. Each listing can bring a buyer every week. A lead goes cold after 5 weeks. Without a listing there are no leads.')}
+  ${sec('3. Site Visit', 'సైట్ విజిట్', 'Open a lead, <b>Contact</b> the customer (1 energy, +5 XP), then <b>Schedule site visit</b> (2 energy, +15 XP). A good match of area, type and budget makes the buyer happier. Energy refills +2 each week, max 10.')}
+  ${sec('4. Negotiation', 'బేరసారాలు', 'The buyer opens with an offer. You can counter, accept, or walk away. You cannot counter below what the seller expects. If your counter is within the buyer\'s limit, the deal is won. If not, the buyer moves up a little and loses patience. At most 5 rounds.')}
+  ${sec('5. Deal and Commission', 'డీల్ · కమీషన్', 'When the deal is won you get commission: 2% of the sale price (+0.2% for each Customer Service level). Some property types change the rate a little (see below). You also get XP: 50 + 1 for every ₹10,000 of commission.')}
+  ${sec('Money', 'డబ్బు', `You start with ₹5,00,000. Cash comes from commission and weekly rent. Spend it on Business upgrades, Staff, Vehicles, or buy a property as an investment (it pays weekly rent and you can sell it later). Amounts are in-game values for play, not real market data.`)}
+  ${sec('XP and Level', 'అనుభవ పాయింట్లు', 'XP raises your level and title. Higher levels unlock new areas on the Map and more staff slots. Level n needs 100 × n^1.5 XP.')}
+  ${sec('Missions', 'మిషన్లు', 'Five missions each day pay cash, XP and sometimes a property token. A token boosts your leads (2 extra buyers).')}
+  ${sec('Staff', 'సిబ్బంది', `Business → Staff. Hire up to your free slots (1 slot, +1 every 3 levels). Salary is paid each game week; if cash is short they pause. Roles: ${STAFF.map((d) => d.name).join(', ')}.`)}
+  ${sec('Vehicles', 'వాహనాలు', `Business → Vehicles. A better vehicle improves site visits. A car opens Tellapur and Sangareddy; an SUV opens Financial District. Range: ${VEHICLES.map((v) => `${v.name} ${inrShort(v.price)}`).join(', ')}.`)}
+  ${sec('Map', 'మ్యాప్', 'The Map shows areas, the roads between them and dots for properties: blue = available, gold = your listing, green = owned, grey = sold. Tap an area to see its properties.')}
+  ${sec('Property types', 'ఆస్తి రకాలు', `<div style="margin-top:2px">${TYPE_IDS.map((t) => `<div style="margin-bottom:6px">${TYPES[t].icon} <b>${TYPES[t].label}</b>${TYPES[t].note ? `<br><span class="mut">${TYPES[t].note}</span>` : '<br><span class="mut">Standard commission, XP and negotiation.</span>'}</div>`).join('')}</div>`)}
+  ${sec('Save and backup', 'సేవ్ · బ్యాకప్', 'The game saves by itself. In <b>Settings</b> you can Save now, download a backup file and restore it later, even on a new phone. Clearing browser data deletes the save, so back up now and then.')}
+  <div class="mut" style="margin:10px 0">Prices, areas and events are in-game values for play. They are not real market data, approvals or legal advice.</div>`,
+};
