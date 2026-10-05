@@ -27,6 +27,12 @@ export function weeklyLeads(s, rand) {
     if (s.leads.some((l) => l.propertyId === p.id && isOpen(l)) && rand() < 0.5) continue;
     if (rand() < leadChance(s)) { createLead(s, rand, p); made++; }
   }
+  // Dry-spell guard: with a live listing, nothing open and no lead for 3 weeks, one buyer shows up.
+  const live = forSaleProps(s);
+  if (!made && live.length && !openLeads(s).length) {
+    const last = s.leads.reduce((m, l) => Math.max(m, l.createdWeek || 0), 0);
+    if (s.week - last >= 3) { createLead(s, rand, live[int(rand, 0, live.length - 1)]); made++; }
+  }
   return made;
 }
 export function expireLeads(s) {
