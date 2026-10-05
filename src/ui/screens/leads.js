@@ -7,6 +7,8 @@ import { dispatch } from '../../state/store.js';
 import { contactLead, doVisit, beginNegotiation, boost } from '../../state/actions.js';
 import { B } from '../../config/balance.js';
 import { fitScore } from '../../logic/siteVisit.js';
+import { tick } from '../../state/actions.js';
+import { today } from '../../services/clock.js';
 
 const STATUS = { new: ['New', 'blue'], contacted: ['Contacted', 'gold'], visited: ['Visited', 'gold'], negotiating: ['Negotiating', 'gold'], won: ['Won', 'green'], lost: ['Lost', 'red'], expired: ['Expired', ''] };
 const urg = (n) => (n >= 4 ? 'High' : n >= 3 ? 'Medium' : 'Low');
@@ -22,10 +24,11 @@ export const leads = {
       <div class="col" style="text-align:right;align-items:flex-end">${chip(lb, k)}${['new', 'contacted', 'visited'].includes(l.status) ? `<span class="mut">${Math.max(0, l.expiresWeek - s.week)}w left</span>` : ''}</div></div></div>`;
     }).join('');
     const tabs = [['new', 'New'], ['active', 'Active'], ['closed', 'Closed']].map(([id, lb]) => `<span class="chip ${tab === id ? 'on' : ''}" data-act="tab" data-arg="${id}">${lb} (${lists[id].length})</span>`).join('');
-    return `${top('Leads')}<div class="chips">${tabs}</div>${items || empty(tab === 'new' ? 'No new leads. Leads arrive each week for your listings.' : 'Nothing here yet.')}
+    return `${top('Leads')}<div class="chips">${tabs}</div>${items || empty(tab === 'new' ? 'No new leads yet. Each listing can bring a buyer every week. Time passes about every 25 seconds, or tap below.' : 'Nothing here yet.')}${!items && tab === 'new' ? btn({ label: 'Advance one week ▶', act: 'week', kind: 'ghost' }) : ''}
     ${btn({ label: `Boost leads · 1 🪙 token (you have ${s.player.tokens})`, act: 'boost', kind: 'ghost', disabled: s.player.tokens < 1, reason: 'Earn property tokens from missions.' })}`;
   },
   handlers: {
+    week: ({ toast }) => { const r = dispatch(tick, today()); toast(r.newLeads ? `Week passed. ${r.newLeads} new lead${r.newLeads > 1 ? 's' : ''}.` : 'Week passed. No new buyer yet.'); },
     tab: ({ arg }) => dispatch((st) => { st.ui.lt = arg; return {}; }),
     open: ({ arg, go }) => go('customer', { leadId: arg }),
     boost: ({ toast }) => { const r = dispatch(boost); toast(r.ok ? `${B.boostLeads} hot leads arrived.` : r.msg, !r.ok); },
