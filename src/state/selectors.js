@@ -1,0 +1,12 @@
+import { isOpen } from '../logic/leads.js';
+export const propOf = (s, id) => s.properties.find((p) => p.id === id);
+export const custOf = (s, id) => s.customers.find((c) => c.id === id);
+export const leadOf = (s, id) => s.leads.find((l) => l.id === id);
+export const newLeadCount = (s) => s.leads.filter((l) => l.status === 'new').length;
+export const activeLeads = (s) => s.leads.filter((l) => isOpen(l) && l.status !== 'new');
+export const closedLeads = (s) => s.leads.filter((l) => !isOpen(l));
+export const owned = (s) => s.properties.filter((p) => p.status === 'owned');
+export const listed = (s) => s.properties.filter((p) => p.status === 'listed');
+export const marketProps = (s) => s.properties.filter((p) => p.status === 'market');
+export const weeklyRent = (s) => owned(s).reduce((a, p) => a + (p.rentWeekly || 0), 0);
+export const netWorth = (s) => s.player.cash + owned(s).reduce((a, p) => a + p.ask, 0);
