@@ -6,7 +6,7 @@ Mobile-first (Android, portrait 9:16) real estate business simulation set in Hyd
 Core loop: PROPERTY → LEAD → CUSTOMER → SITE VISIT → NEGOTIATION → DEAL → COMMISSION → UPGRADE → EXPANSION
 
 ## Status
-MVP v1.0 is playable: full deal loop (property, lead, customer, site visit, negotiation, deal, commission, XP, upgrade, save). Phase 2 (map graphics, staff, vehicles, achievements, leaderboard, Firebase cloud sync) is locked until approved.
+MVP v1.1 is playable: full deal loop (property, lead, customer, site visit, negotiation, deal, commission, XP, upgrade, save). Phase 2 (map graphics, staff, vehicles, achievements, leaderboard, Firebase cloud sync) is locked until approved.
 
 ## Play
 Open the GitHub Pages link on Android Chrome, tap the menu (three dots), then Install app / Add to Home screen. Works offline after the first load. Progress saves on the phone (localStorage).
