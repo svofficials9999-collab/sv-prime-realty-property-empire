@@ -72,3 +72,6 @@ Each file stays small and single-purpose; no file above ~300 lines.
 
 ## Git workflow
 One feature per commit/PR: `feat(properties): ...`, `feat(leads): ...`. Never edit other repositories. Deploy via GitHub Pages from main.
+
+## As built (MVP)
+Matches the layout above with these simplifications: screens are grouped by feature (onboarding, properties, leads, negotiation, business, profile+settings), one `data/` file per content type as JS modules (no fetch, works offline), and the store runs reducers that update the single state object, then notifies the UI and autosaves (300 ms debounce, plus on page hide). Market, rent and leads advance on a 25-second game week timer that pauses while a negotiation is open.
