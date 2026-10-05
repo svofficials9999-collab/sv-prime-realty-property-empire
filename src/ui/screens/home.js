@@ -40,7 +40,8 @@ export const home = {
     <div class="row mut" style="margin-top:6px"><span>Active leads ${al}</span><span>Week ${s.week}</span></div>
     ${btn({ label: 'Advance one week ▶', act: 'week', kind: 'ghost' })}
     <div class="why">Time also passes by itself every ~25 seconds. Advancing gives energy, rent and new leads.</div></div>
-    <div style="display:flex;gap:8px"><div style="flex:1">${btn({ label: 'Profile', act: 'goto', arg: 'profile', kind: 'ghost' })}</div><div style="flex:1">${btn({ label: 'Settings', act: 'goto', arg: 'settings', kind: 'ghost' })}</div></div>`;
+    <div style="display:flex;gap:8px"><div style="flex:1">${btn({ label: 'Profile', act: 'goto', arg: 'profile', kind: 'ghost' })}</div><div style="flex:1">${btn({ label: 'Settings', act: 'goto', arg: 'settings', kind: 'ghost' })}</div></div>
+    ${btn({ label: 'How to play · ఎలా ఆడాలి', act: 'goto', arg: 'help', kind: 'ghost' })}`;
   },
   handlers: {
     goto: ({ arg, go }) => go(arg),
