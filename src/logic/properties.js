@@ -8,7 +8,8 @@ import { slots } from './upgrades.js';
 
 export function createProperty(s, rand, opts = {}) {
   const loc = opts.location ? locById(opts.location) : pick(rand, unlocked(s));
-  const type = opts.type || pick(rand, TYPE_IDS);
+  const pool = TYPE_IDS.filter((id) => !TYPES[id].locs || TYPES[id].locs.includes(loc.id));
+  const type = opts.type || pick(rand, pool);
   const t = TYPES[type];
   const area = roundTo(between(rand, t.size[0], t.size[1]), 10);
   const price = roundTo(ppsyOf(s, loc.id) * area * t.eq * t.mult * between(rand, 0.95, 1.05), 10000);
