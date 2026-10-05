@@ -1,3 +1,4 @@
+import { syncLeads } from '../logic/leads.js';
 import { SAVE_KEY, BACKUP_KEY, SAVE_VERSION } from '../config/constants.js';
 
 const checksum = (str) => { let h = 5381; for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0; return h >>> 0; };
@@ -17,6 +18,7 @@ export function migrate(s) {
   s.version = SAVE_VERSION;
   s.nav = s.nav || { route: 'home', params: {} };
   s.ui = s.ui || {};
+  syncLeads(s); // clear stale negotiations left by older versions
   return s;
 }
 export function save(state, store = globalThis.localStorage) {
