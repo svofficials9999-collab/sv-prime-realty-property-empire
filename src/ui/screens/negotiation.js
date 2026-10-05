@@ -9,7 +9,7 @@ const cur = (s, n) => Math.min(n.ask, Math.max(n.floor, s.ui.counter ?? n.ask));
 export const negotiate = {
   render: (s, params) => {
     const l = leadOf(s, params.leadId);
-    if (!l || !l.neg || l.neg.status !== 'open') return top('Negotiation', 'leads') + empty('No open negotiation.') + btn({ label: 'Back to leads', act: 'leads', kind: 'ghost' });
+    if (!l || !l.neg || l.neg.status !== 'open' || l.status !== 'negotiating') return top('Negotiation', 'leads') + empty('No open negotiation.') + btn({ label: 'Back to leads', act: 'leads', kind: 'ghost' });
     const n = l.neg; const c = custOf(s, l.customerId); const p = propOf(s, l.propertyId);
     const price = cur(s, n); const d1 = roundTo(n.ask * 0.005, 5000) || 5000; const d2 = roundTo(n.ask * 0.02, 5000) || 20000;
     const hearts = '♥'.repeat(Math.max(0, n.patience)) + '<span style="opacity:.25">' + '♥'.repeat(Math.max(0, 5 - Math.max(0, n.patience))) + '</span>';
