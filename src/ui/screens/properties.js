@@ -53,7 +53,7 @@ export const property = {
     return `${top(p.title, 'properties')}
     <div class="card"><div class="row"><div class="pi">${t.icon}</div><div class="col"><b class="big gold">${inr(p.ask)}</b><span class="mut">${t.label} · ${p.area} ${p.unit}</span></div></div></div>
     <div class="card">${kv('Location', loc.name)}${kv('Price in area', `${inr(ppsyOf(s, p.location))} / sq yd`)}${kv('Area demand', `${demandOf(s, p.location)} / 100`)}
-    ${kv('Rental yield', p.yieldPct ? `${p.yieldPct}% a year` : 'No rent (land)')}${p.rentWeekly ? kv('Rent per week', inr(p.rentWeekly)) : ''}</div>${actions}`;
+    ${t.note ? `<div class="why" style="margin:6px 0">${t.note}</div>` : ''}${kv('Rental yield', p.yieldPct ? `${p.yieldPct}% a year` : 'No rent (land)')}${p.rentWeekly ? kv('Rent per week', inr(p.rentWeekly)) : ''}</div>${actions}`;
   },
   handlers: {
     take: ({ arg, toast }) => { const r = dispatch(takeListingAction, arg); toast(r.ok ? 'Added to your listings. Leads will come.' : r.msg, !r.ok); },
