@@ -32,6 +32,31 @@ export function weeklyLeads(s, rand) {
 export function expireLeads(s) {
   for (const l of s.leads) if (['new', 'contacted', 'visited'].includes(l.status) && l.expiresWeek <= s.week) { l.status = 'expired'; l.result = { kind: 'expired' }; }
 }
+// Keeps every lead and its negotiation in step. Lead status is the master for closed leads
+// (won/lost/expired close the negotiation); a recorded deal is the master for "won".
+// Never touches cash, XP or deals, so it is safe to run on old saves.
+export function syncLeads(s) {
+  if (!s || !Array.isArray(s.leads)) return 0;
+  let fixed = 0;
+  for (const l of s.leads) {
+    const n = l.neg;
+    const deal = (s.deals || []).find((d) => d.leadId === l.id);
+    const prop = (s.properties || []).find((p) => p.id === l.propertyId);
+    if (deal && l.status !== 'won') { l.status = 'won'; l.result = { kind: 'won', dealId: deal.id }; fixed++; }
+    else if (!deal && prop && prop.status === 'sold' && ['new', 'contacted', 'visited', 'negotiating'].includes(l.status)) {
+      l.status = 'lost'; l.result = { kind: 'lost', reason: 'sold' }; if (n && n.status === 'open') n.reason = 'sold'; fixed++;
+    }
+    if (l.status === 'won') {
+      if (n && n.status !== 'won') { n.status = 'won'; if (n.price == null) n.price = deal ? deal.price : n.offer; fixed++; }
+    } else if (l.status === 'lost' || l.status === 'expired') {
+      if (n && n.status === 'open') { n.status = 'lost'; n.reason = n.reason || (l.result && l.result.reason) || l.status; fixed++; }
+    } else if (n && n.status === 'lost') {
+      l.status = 'lost'; l.result = l.result || { kind: 'lost', reason: n.reason || 'lost' }; fixed++;
+    }
+    if (l.status === 'lost' && n && n.status === 'open') { n.status = 'lost'; fixed++; }
+  }
+  return fixed;
+}
 export function boostLeads(s, rand) {
   const props = forSaleProps(s);
   if (!props.length) return { ok: false, msg: 'List a property first' };
