@@ -5,7 +5,7 @@ import { today } from './services/clock.js';
 import { getState, setState, configure, dispatch, flush } from './state/store.js';
 import { tick, nav } from './state/actions.js';
 import { ensureMissions } from './logic/missions.js';
-import { mount, register, go, toast } from './ui/router.js';
+import { mount, register, go, toast, seedBack } from './ui/router.js';
 import * as onb from './ui/screens/onboarding.js';
 import { home } from './ui/screens/home.js';
 import { properties, property } from './ui/screens/properties.js';
@@ -37,7 +37,7 @@ function boot() {
   for (let i = 0; i < gap; i++) tick(saved, today());
   const r = saved.nav.route;
   if (['splash', 'login'].includes(r) || (r === 'tutorial' && saved.tutorial.done)) dispatch(nav, 'home', {});
-  else dispatch(nav, r, saved.nav.params || {});
+  else { dispatch(nav, r, saved.nav.params || {}); if (r !== 'home') seedBack(); }
   if (gap > 0) toast(`While you were away: ${gap} week${gap > 1 ? 's' : ''} passed.`);
 }
 setTimeout(boot, 900);
