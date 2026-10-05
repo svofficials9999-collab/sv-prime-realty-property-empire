@@ -10,3 +10,4 @@ export const TITLES = [
   [20, 'Property Developer'],
   [50, 'Real Estate Tycoon'],
 ];
+export const VERSION = '1.3.0';
