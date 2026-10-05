@@ -35,7 +35,7 @@ export function toast(msg, bad = false) {
   clearTimeout(toastTimer); toastTimer = setTimeout(() => el.remove(), 3200);
 }
 const TABS = [['home', '🏠', 'HOME'], ['properties', '🏘️', 'PROPERTIES'], ['leads', '👥', 'LEADS'], ['map', '🗺️', 'MAP'], ['business', '💼', 'BUSINESS']];
-const TAB_OF = { home: 'home', missions: 'home', profile: 'home', settings: 'home', properties: 'properties', property: 'properties', mine: 'properties', leads: 'leads', customer: 'leads', visit: 'leads', map: 'map', business: 'business' };
+const TAB_OF = { home: 'home', missions: 'home', profile: 'home', settings: 'home', properties: 'properties', property: 'properties', mine: 'properties', leads: 'leads', customer: 'leads', visit: 'leads', map: 'map', business: 'business', staff: 'business', garage: 'business' };
 const BARE = new Set(['splash', 'login', 'tutorial', 'negotiate', 'deal']);
 
 function hud(s) {
