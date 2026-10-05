@@ -1,3 +1,4 @@
+import { payStaff, hireStaff, fireStaff, buyVehicle } from '../logic/team.js';
 import { B } from '../config/balance.js';
 import { makeRand } from '../util/rng.js';
 import { driftMarket } from '../logic/market.js';
@@ -32,10 +33,11 @@ export function tick(s, today) {
     let guard = 0;
     while (marketCount(s) < B.marketPoolMax && guard++ < 4) s.properties.push(createProperty(s, rand));
   }
+  const payroll = payStaff(s);
   const newLeads = weeklyLeads(s, rand);
   expireLeads(s);
   if (today) { s.today = today; ensureMissions(s, today); }
-  return { rent, newLeads };
+  return { rent, newLeads, payroll };
 }
 export function takeListingAction(s, id) {
   const r = takeListing(s, id);
@@ -47,6 +49,9 @@ export function buyPropertyAction(s, id) {
   if (r.ok) track(s, 'add');
   return r;
 }
+export const hire = (s, id) => hireStaff(s, id);
+export const fire = (s, id) => fireStaff(s, id);
+export const buyCar = (s, id) => buyVehicle(s, id);
 export const toggleForSaleAction = (s, id) => toggleForSale(s, id);
 export const withdrawAction = (s, id) => withdrawListing(s, id);
 
