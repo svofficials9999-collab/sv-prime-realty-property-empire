@@ -83,6 +83,7 @@ function finishIfDone(s, l) {
   const n = l.neg;
   if (n.status === 'won') {
     const deal = closeDeal(s, l);
+    if (!deal) return {};
     track(s, 'deal'); track(s, 'sales', deal.price);
     const g = addXp(s, deal.xp);
     deal.levelUp = g > 0;
@@ -98,20 +99,20 @@ function finishIfDone(s, l) {
 }
 export function negCounter(s, id, price) {
   const l = lead(s, id);
-  if (!l || !l.neg) return { ok: false, msg: 'No negotiation' };
+  if (!l || !l.neg || l.status !== 'negotiating') return { ok: false, msg: 'No open negotiation' };
   const r = counter(l.neg, price);
   if (!r.ok) return r;
   return { ...r, ...finishIfDone(s, l) };
 }
 export function negAccept(s, id) {
   const l = lead(s, id);
-  if (!l || !l.neg || !canAccept(l.neg)) return { ok: false, msg: "Below the seller's expected price" };
+  if (!l || !l.neg || l.status !== 'negotiating' || !canAccept(l.neg)) return { ok: false, msg: "Below the seller's expected price" };
   const r = accept(l.neg);
   return { ...r, ...finishIfDone(s, l) };
 }
 export function negWalk(s, id) {
   const l = lead(s, id);
-  if (!l || !l.neg) return { ok: false };
+  if (!l || !l.neg || l.status !== 'negotiating') return { ok: false, msg: 'No open negotiation' };
   const r = walk(l.neg);
   return { ...r, ...finishIfDone(s, l) };
 }
