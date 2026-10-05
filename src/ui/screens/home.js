@@ -25,14 +25,15 @@ export const home = {
     const need = xpNeeded(p.level) - p.xp;
     const guide = s.stats.deals === 0 ? `<div class="card" style="margin-top:10px"><b>Your first deal</b>
       <div class="mut" style="margin:4px 0 0">1. Open a lead and contact the customer<br>2. Take them on a site visit<br>3. Negotiate: counter, and accept once the buyer's offer is at or above what the seller expects<br>4. Earn commission (2% of the price) plus XP. You start with ₹5 L cash; properties to buy cost ₹20 L+, so earn commission first.</div></div>` : '';
-    const hint = nx ? NXT[nx.status][0] : nl ? `You have ${nl} new lead${nl > 1 ? 's' : ''}. Open Leads to contact them.` : al ? 'Continue your active leads: site visit or negotiation.' : 'No leads yet. List more properties or advance the week.';
+    const nLive = listed(s).length + owned(s).filter((x) => x.forSale).length;
+    const hint = nx ? NXT[nx.status][0] : !nLive ? 'You have no active listings. Open Properties and take a listing to get buyers.' : nl ? `You have ${nl} new lead${nl > 1 ? 's' : ''}. Open Leads to contact them.` : al ? 'Continue your active leads: site visit or negotiation.' : `No buyers right now. New leads come as weeks pass (about every 25 seconds, or tap Advance one week). Each of your ${nLive} listing${nLive > 1 ? 's' : ''} can bring a buyer every week.`;
     return `<h1>Welcome, ${p.name}</h1><div class="mut">${titleFor(p.level)} · ${nt ? `next title ${nt[1]} at level ${nt[0]}` : 'top rank'}</div>
     <div class="card" style="margin-top:12px"><div class="row"><span>Level ${p.level}</span><span class="mut">${p.xp} / ${xpNeeded(p.level)} XP</span></div>${bar((p.xp / xpNeeded(p.level)) * 100)}</div>
     ${ev ? `<div class="banner">📈 ${ev.text}</div>` : ''}
     <div class="grid2">${stat('Cash', inrShort(p.cash))}${stat('Energy', `⚡ ${p.energy} / 10`)}${stat('Deals closed', s.stats.deals)}${stat('Weekly rent', inrShort(weeklyRent(s)))}</div>
     <div class="card" style="margin-top:10px"><b>Next step</b><div class="mut" style="margin:4px 0 0">${hint}</div>
-    ${nx ? btn({ label: NXT[nx.status][1], act: 'lead', arg: nx.id }) : btn({ label: 'Open Leads', act: 'goto', arg: 'leads' })}
-    ${nx && open.length > 1 ? btn({ label: `All leads (${open.length})`, act: 'goto', arg: 'leads', kind: 'ghost' }) : ''}</div>${guide}
+    ${nx ? btn({ label: NXT[nx.status][1], act: 'lead', arg: nx.id }) : !nLive ? btn({ label: 'Open Properties', act: 'goto', arg: 'properties' }) : btn({ label: 'Advance one week ▶', act: 'week' })}
+    ${nx && open.length > 1 ? btn({ label: `All leads (${open.length})`, act: 'goto', arg: 'leads', kind: 'ghost' }) : !nx ? btn({ label: 'Open Leads', act: 'goto', arg: 'leads', kind: 'ghost' }) : ''}</div>${guide}
     <div class="card" style="margin-top:10px"><div class="row"><b>Next level</b><span class="gold">${need} XP to go</span></div><div class="why">XP: contact +5, site visit +15, deal +50 and +1 per ₹10,000 commission. Missions give bonus XP.</div></div>
     <div class="grid2" style="margin-top:2px"><div>${btn({ label: `Missions ${done}/5${ready ? ' · claim!' : ''}`, act: 'goto', arg: 'missions', kind: 'blue' })}</div><div>${btn({ label: 'My Properties', act: 'goto', arg: 'mine', kind: 'ghost' })}</div></div>
     <div class="card" style="margin-top:12px"><div class="row"><span>Listing slots</span><span>${listingCount(s)} / ${slots(s)}</span></div>
