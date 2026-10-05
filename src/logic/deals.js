@@ -1,5 +1,6 @@
 import { B } from '../config/balance.js';
 import { commissionRate } from './upgrades.js';
+import { TYPES } from '../data/propertyTypes.js';
 
 // Closes a won negotiation: client property pays commission; player-owned property pays full price.
 export function closeDeal(s, lead) {
@@ -9,12 +10,13 @@ export function closeDeal(s, lead) {
   if (!p || p.status === 'sold' || lead.status === 'won') return s.deals.find((d) => d.leadId === lead.id) || null;
   const price = n.price;
   const own = p.status === 'owned';
-  const rate = own ? 0 : commissionRate(s);
+  const tp = TYPES[p.type] || {};
+  const rate = own ? 0 : commissionRate(s) * (tp.comm || 1);
   const commission = own ? 0 : Math.round(price * rate);
   const proceeds = own ? price : commission;
   // Own-property resales earn XP on profit only, so buy/sell loops cannot farm levels.
   const xpBase = own ? Math.max(0, price - (p.boughtAt || price)) : proceeds;
-  const xp = B.xpDeal + Math.floor(xpBase / B.xpPerCommission);
+  const xp = B.xpDeal + Math.floor(xpBase / B.xpPerCommission) + (own ? 0 : tp.xp || 0);
   s.player.cash += proceeds;
   p.status = 'sold'; p.forSale = false; p.soldPrice = price;
   c.satisfaction = Math.min(100, c.satisfaction + 15);
