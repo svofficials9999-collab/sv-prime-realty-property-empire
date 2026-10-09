@@ -31,7 +31,7 @@ export const settings = {
   ${btn({ label: 'Choose backup file', act: 'pickfile', kind: 'blue' })}
   <textarea id="paste" rows="3" placeholder="Or paste backup text here" style="width:100%;margin-top:8px;border-radius:10px;border:1px solid var(--line);background:#0b1a33;color:#fff;padding:8px"></textarea>${btn({ label: 'Restore from pasted text', act: 'pastein', kind: 'ghost' })}</div>
   <div class="card"><b>Restore points on this phone</b>${pts.length ? pts.map((r) => `<div style="margin-top:8px;border-top:1px solid #1d3a6a;padding-top:8px"><div>${r.label}</div><div class="mut">Level ${r.info.level} · ${inr(r.info.cash)} · Week ${r.info.week} · ${when(r.info.savedAt)}</div>${btn({ label: 'Restore this', act: 'restore', arg: r.id, kind: 'ghost' })}</div>`).join('') : '<div class="mut" style="margin-top:6px">None yet. They appear after you save.</div>'}</div>
-  <div class="card">${btn({ label: 'How to play', act: 'help', kind: 'ghost' })}</div>
+  <div class="card">${btn({ label: 'Game guide · గేమ్ గైడ్', act: 'help', kind: 'ghost' })}</div>
   <div class="card"><b>Reset game</b><div class="mut">Deletes progress and starts over. A safety copy stays under Restore points until the next import.</div>${btn({ label: 'Reset save', act: 'reset', kind: 'danger' })}</div>
   <div class="card mut">SV PRIME REALTY: PROPERTY EMPIRE · v${VERSION}<br>Prices and events are in-game values for play, not real market data or legal advice.</div>`;
   },
