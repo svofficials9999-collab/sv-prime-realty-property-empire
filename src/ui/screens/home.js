@@ -1,3 +1,5 @@
+import { PORTRAIT, BRAND_LOGO } from '../../data/brand.js';
+import { esc } from '../../util/dom.js';
 import { btn, stat, bar, chip } from '../components.js';
 import { inrShort } from '../../util/money.js';
 import { xpNeeded, nextTitle, titleFor } from '../../logic/xp.js';
@@ -27,11 +29,11 @@ export const home = {
       <div class="mut" style="margin:4px 0 0">1. Open a lead and contact the customer<br>2. Take them on a site visit<br>3. Negotiate: counter, and accept once the buyer's offer is at or above what the seller expects<br>4. Earn commission (2% of the price) plus XP. You start with ₹5 L cash; properties to buy cost ₹20 L+, so earn commission first.</div></div>` : '';
     const nLive = listed(s).length + owned(s).filter((x) => x.forSale).length;
     const hint = nx ? NXT[nx.status][0] : !nLive ? 'You have no active listings. Open Properties and take a listing to get buyers.' : nl ? `You have ${nl} new lead${nl > 1 ? 's' : ''}. Open Leads to contact them.` : al ? 'Continue your active leads: site visit or negotiation.' : `No buyers right now. New leads come as weeks pass (about every 25 seconds, or tap Advance one week). Each of your ${nLive} listing${nLive > 1 ? 's' : ''} can bring a buyer every week.`;
-    return `<h1>Welcome, ${p.name}</h1><div class="mut">${titleFor(p.level)} · ${nt ? `next title ${nt[1]} at level ${nt[0]}` : 'top rank'}</div>
+    return `<section class="empire-hero"><div class="hero-brand"><img src="${BRAND_LOGO}" alt="SV Prime Realty logo" width="36" height="36"><div><div class="brand-name">SV PRIME REALTY</div><div class="hero-kicker">PROPERTY EMPIRE · ప్రాపర్టీ ఎంపైర్</div></div><span class="hero-badge">Lv ${p.level}</span></div><div class="hero-main"><div><div class="hero-kicker">YOUR EMPIRE · మీ సామ్రాజ్యం</div><h1>Welcome, ${esc(p.name)}</h1><div class="mut">${titleFor(p.level)} · ${nt ? `next title ${nt[1]} at level ${nt[0]}` : 'top rank'}</div></div><div class="creator-photo"><img src="${PORTRAIT}" alt="D. Srinivas" width="72" height="72"></div></div><div class="creator-credit"><b>Created by D. Srinivas</b><span>సృష్టికర్త: డి. శ్రీనివాస్</span></div></section>
     <div class="card" style="margin-top:12px"><div class="row"><span>Level ${p.level}</span><span class="mut">${p.xp} / ${xpNeeded(p.level)} XP</span></div>${bar((p.xp / xpNeeded(p.level)) * 100)}</div>
     ${ev ? `<div class="banner">📈 ${ev.text}</div>` : ''}
     <div class="grid2">${stat('Cash', inrShort(p.cash))}${stat('Energy', `⚡ ${p.energy} / 10`)}${stat('Deals closed', s.stats.deals)}${stat('Weekly rent', inrShort(weeklyRent(s)))}</div>
-    <div class="card" style="margin-top:10px"><b>Next step</b><div class="mut" style="margin:4px 0 0">${hint}</div>
+    <div class="card" style="margin-top:10px"><b>Next step <span class="step-tel">· తర్వాతి అడుగు</span></b><div class="mut" style="margin:4px 0 0">${hint}</div>
     ${nx ? btn({ label: NXT[nx.status][1], act: 'lead', arg: nx.id }) : !nLive ? btn({ label: 'Open Properties', act: 'goto', arg: 'properties' }) : btn({ label: 'Advance one week ▶', act: 'week' })}
     ${nx && open.length > 1 ? btn({ label: `All leads (${open.length})`, act: 'goto', arg: 'leads', kind: 'ghost' }) : !nx ? btn({ label: 'Open Leads', act: 'goto', arg: 'leads', kind: 'ghost' }) : ''}</div>${guide}
     <div class="card" style="margin-top:10px"><div class="row"><b>Next level</b><span class="gold">${need} XP to go</span></div><div class="why">XP: contact +5, site visit +15, deal +50 and +1 per ₹10,000 commission. Missions give bonus XP.</div></div>
