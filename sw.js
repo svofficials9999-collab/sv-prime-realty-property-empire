@@ -8,5 +8,9 @@ self.addEventListener('fetch', (e) => {
   const root = new URL('./', self.location.href);
   const url = new URL(e.request.url);
   if (e.request.method !== 'GET' || url.origin !== root.origin || !url.pathname.startsWith(root.pathname)) return;
+  if (url.pathname === new URL('manifest.webmanifest', root).pathname) {
+    e.respondWith((async () => { const c = await caches.open(VERSION); try { const r = await fetch(e.request, { cache: 'no-store' }); if (r.ok) await c.put(e.request, r.clone()); return r; } catch { return await c.match(e.request) || Response.error(); } })());
+    return;
+  }
   e.respondWith(caches.open(VERSION).then((c) => c.match(e.request, { ignoreSearch: true })).then((hit) => hit || fetch(e.request).then((res) => { const copy = res.clone(); caches.open(VERSION).then((c) => c.put(e.request, copy)); return res; }).catch(() => caches.open(VERSION).then((c) => c.match('./index.html')))));
 });
