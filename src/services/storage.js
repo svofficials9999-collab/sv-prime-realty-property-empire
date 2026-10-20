@@ -33,7 +33,15 @@ export function load(store = globalThis.localStorage) {
   const raw = store.getItem(SAVE_KEY);
   if (raw) { const s = parse(raw); if (s) return s; }
   const bak = store.getItem(BACKUP_KEY);
-  return bak ? parse(bak) : null;
+  if (bak) { const s = parse(bak); if (s) return s; }
+  // Recovery (add-only): try restore points, then a checksum-less read of any stored save body.
+  for (const k of [SAVE_KEY + '.manual', SAVE_KEY + '.undo', SAVE_KEY, BACKUP_KEY]) {
+    const r = store.getItem(k);
+    if (!r) continue;
+    const s = parse(r); if (s) return s;
+    try { const o = JSON.parse(r); const s2 = migrate(JSON.parse(o.body)); if (s2) return s2; } catch {}
+  }
+  return null;
 }
 export const hasSave = (store = globalThis.localStorage) => !!(store.getItem(SAVE_KEY) || store.getItem(BACKUP_KEY));
 export function wipe(store = globalThis.localStorage) { store.removeItem(SAVE_KEY); store.removeItem(BACKUP_KEY); }
