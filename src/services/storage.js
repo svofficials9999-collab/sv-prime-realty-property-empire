@@ -43,5 +43,5 @@ export function load(store = globalThis.localStorage) {
   }
   return null;
 }
-export const hasSave = (store = globalThis.localStorage) => !!(store.getItem(SAVE_KEY) || store.getItem(BACKUP_KEY));
+export const hasSave = (store = globalThis.localStorage) => !!(store.getItem(SAVE_KEY) || store.getItem(BACKUP_KEY) || store.getItem(SAVE_KEY + '.manual'));
 export function wipe(store = globalThis.localStorage) { store.removeItem(SAVE_KEY); store.removeItem(BACKUP_KEY); }
